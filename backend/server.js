@@ -1,19 +1,18 @@
 const express = require('express');
 const path = require('path');
+const cors = require('cors'); // Opcional si usas CORS
 const app = express();
 const PORT = 3000;
 
-// Middleware para archivos estáticos
+// Middleware
+app.use(cors()); // Opcional si usas CORS
+
+// Archivos estáticos (ahora sí funcionará)
 app.use('/images', express.static(path.join(__dirname, 'public', 'images')));
 app.use('/libros', express.static(path.join(__dirname, 'public', 'libros')));
 
-// Verificación de rutas (agrega esto temporalmente)
-console.log('Ruta absoluta a libros:', path.join(__dirname, 'public', 'libros'));
+// ... (el resto de tu código)
 
-// Resto de tu configuración...
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
-});
 
 // Base de datos de libros
 const libros = [
@@ -534,6 +533,7 @@ const libros = [
     trama: "Comedia",
   }
 ];
+
 // Rutas de la API
 app.get("/api/libros", (req, res) => {
   res.json(libros);
@@ -545,7 +545,7 @@ app.get("/api/libros/:trama", (req, res) => {
   res.json(librosFiltrados);
 });
 
-// Iniciar servidor
+// Iniciar servidor (SOLO UNA VEZ)
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
   console.log(`API de libros: http://localhost:${PORT}/api/libros`);
