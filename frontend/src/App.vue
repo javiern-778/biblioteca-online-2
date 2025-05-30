@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div class="biblioteca-container">
     <h1 class="titulo-principal">Biblioteca Online</h1>
 
-    <!-- Menú de categorías estilo pestañas -->
+    <!-- Menú de categorías -->
     <div class="menu-categorias">
       <button 
         v-for="trama in tramas" 
@@ -20,6 +20,11 @@
       </button>
     </div>
 
+    <!-- Mensaje de carga/error -->
+    <div v-if="isLoading" class="cargando">Cargando libros...</div>
+    <div v-if="error" class="error">{{ error }}</div>
+
+    <!-- Grid de libros -->
     <div class="libros-grid">
       <LibroCard
         v-for="libro in librosFiltrados"
@@ -29,6 +34,7 @@
       />
     </div>
 
+    <!-- Modal -->
     <ModalLibro
       v-if="libroSeleccionado"
       :archivo="libroSeleccionado.archivo"
@@ -42,37 +48,41 @@ import { ref, onMounted, computed } from "vue";
 import LibroCard from "./components/LibroCard.vue";
 import ModalLibro from "./components/ModalLibro.vue";
 
+// Estado de la aplicación
 const libros = ref([]);
 const libroSeleccionado = ref(null);
 const tramaSeleccionada = ref("");
 const isLoading = ref(true);
 const error = ref(null);
 
+// Categorías
 const tramas = [
-  "Aventura", "Romántica", "Suspenso", "Terror", 
-  "Ciencia Ficción", "Fantasía", "Histórica", "Drama", 
+  "Aventura", "Romántica", "Suspenso", "Terror",
+  "Ciencia Ficción", "Fantasía", "Histórica", "Drama",
   "Biográfica", "Coming of Age", "Comedia"
 ];
 
+// Cargar libros desde la API
 async function cargarLibros() {
   try {
     isLoading.value = true;
-    const res = await fetch("http://localhost:3000/api/libros");
+    error.value = null;
+    const response = await fetch("http://localhost:3000/api/libros");
     
-    if (!res.ok) {
-      throw new Error(`Error ${res.status}: ${res.statusText}`);
+    if (!response.ok) {
+      throw new Error(`Error al cargar libros: ${response.status}`);
     }
     
-    libros.value = await res.json();
-    error.value = null;
+    libros.value = await response.json();
   } catch (err) {
     error.value = "No se pudieron cargar los libros. Intente nuevamente más tarde.";
-    console.error("Error al cargar libros:", err);
+    console.error("Error:", err);
   } finally {
     isLoading.value = false;
   }
 }
 
+// Funciones del modal
 function abrirModal(libro) {
   libroSeleccionado.value = libro;
 }
@@ -81,28 +91,37 @@ function cerrarModal() {
   libroSeleccionado.value = null;
 }
 
+// Computed: libros filtrados por categoría
 const librosFiltrados = computed(() => {
   if (!tramaSeleccionada.value) return libros.value;
-  return libros.value.filter((libro) => libro.trama === tramaSeleccionada.value);
+  return libros.value.filter(libro => libro.trama === tramaSeleccionada.value);
 });
 
+// Cargar libros al montar el componente
 onMounted(() => {
   cargarLibros();
 });
 </script>
 
 <style>
+.biblioteca-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
 .titulo-principal {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
+  color: #2c3e50;
 }
 
 .menu-categorias {
   display: flex;
   overflow-x: auto;
-  gap: 8px;
-  padding: 10px 0;
-  margin-bottom: 20px;
+  gap: 10px;
+  padding: 15px 0;
+  margin-bottom: 30px;
   border-bottom: 1px solid #eee;
 }
 
@@ -122,7 +141,7 @@ onMounted(() => {
 }
 
 .menu-categorias button.active {
-  background-color: #4CAF50;
+  background-color: #42b983;
   color: white;
   font-weight: bold;
 }
@@ -130,8 +149,25 @@ onMounted(() => {
 .libros-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 20px;
+  gap: 25px;
   padding: 20px 0;
+}
+
+.cargando, .error {
+  text-align: center;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 5px;
+}
+
+.cargando {
+  background-color: #f8f9fa;
+  color: #6c757d;
+}
+
+.error {
+  background-color: #f8d7da;
+  color: #721c24;
 }
 
 @media (max-width: 768px) {
