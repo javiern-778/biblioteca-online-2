@@ -1,20 +1,25 @@
 <template>
-  <div class="card">
+  <div class="card" @click="abrirLibro" role="button" tabindex="0" @keydown.enter="abrirLibro">
     <img :src="libro.imagen" :alt="libro.titulo" />
     <div class="info">
       <h2>{{ libro.titulo }}</h2>
       <p class="autor">{{ libro.autor }}</p>
-      <a :href="libro.archivo" download class="btn-download">📥 Descargar</a>
+      <a :href="libro.archivo" download class="btn-download" @click.stop>📥 Descargar</a>
     </div>
   </div>
 </template>
 
 <script setup>
 defineProps(['libro'])
+
+function abrirLibro() {
+  window.open(libro.archivo, '_blank')
+}
 </script>
 
 <style scoped>
 .card {
+  cursor: pointer;
   border: 1px solid #ddd;
   border-radius: 8px;
   overflow: hidden;
@@ -23,11 +28,16 @@ defineProps(['libro'])
   flex-direction: column;
   background: #fff;
   transition: transform 0.2s ease;
+  outline: none;
 }
 
 .card:hover {
   transform: translateY(-5px);
   box-shadow: 0 5px 15px rgb(0 0 0 / 0.15);
+}
+
+.card:focus {
+  box-shadow: 0 0 0 3px #2980b9;
 }
 
 img {
@@ -72,5 +82,3 @@ h2 {
   background-color: #3498db;
 }
 </style>
-
-  
