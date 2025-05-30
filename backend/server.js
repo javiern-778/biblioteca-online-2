@@ -44,6 +44,54 @@ const libros = [
     imagen: "http://localhost:3000/images/Crimen-y-castigo.jpg",
     archivo: "http://localhost:3000/libros/Crimen-y-castigo.pdf",
   },
+  {
+    id: 5,
+    titulo: 'El-Gran-Gatsby',
+    autor: 'F. Scott Fitzgerald',
+    descripcion: 'Una historia de amor, ambición y tragedia ambientada en los locos años 20.',
+    imagen: 'http://localhost:3000/images/El-Gran-Gatsby.jpg',
+    archivo: 'http://localhost:3000/libros/El-Gran-Gatsby.pdf'
+  },
+  {
+    id: 6,
+    titulo: 'La-Odisea',
+    autor: 'Homero',
+    descripcion: 'Una épica aventura que sigue a Odiseo en su viaje de regreso a Ítaca tras la guerra de Troya.',
+    imagen: 'http://localhost:3000/images/La-Odisea.jpg',
+    archivo: 'http://localhost:3000/libros/La-Odisea.pdf'
+  },
+  {
+    id: 7,
+    titulo: 'Matar-a-un-ruiseñor',
+    autor: 'Harper Lee',
+    descripcion: 'Una poderosa novela sobre racismo e injusticia en el sur de Estados Unidos.',
+    imagen: 'http://localhost:3000/images/Matar-a-un-ruiseñor.jpg',
+    archivo: 'http://localhost:3000/libros/Matar-a-un-ruiseñor.pdf'
+  },
+  {
+    id: 8,
+    titulo: '1984',
+    autor: 'George Orwell',
+    descripcion: 'Un clásico de la literatura distópica que critica la vigilancia y el totalitarismo.',
+    imagen: 'http://localhost:3000/images/1984.jpg',
+    archivo: 'http://localhost:3000/libros/1984.pdf'
+  },
+  {
+    id: 9,
+    titulo: 'El-amor-en-los-tiempos-del-colera',
+    autor: 'Gabriel García Márquez',
+    descripcion: 'Una historia de amor que desafía el paso del tiempo y las barreras sociales.',
+    imagen: 'http://localhost:3000/images/El-amor-en-los-tiempos-del-colera.jpg',
+    archivo: 'http://localhost:3000/libros/El-amor-en-los-tiempos-del-colera.pdf'
+  },
+  {
+    id: 10,
+    titulo: 'Fahrenheit-451',
+    autor: 'Ray Bradbury',
+    descripcion: 'Una novela que imagina un futuro donde los libros están prohibidos y son quemados.',
+    imagen: 'http://localhost:3000/images/Fahrenheit-451.jpg',
+    archivo: 'http://localhost:3000/libros/Fahrenheit-451.pdf'
+  }
 ];
 
 app.get("/api/libros", (req, res) => {
