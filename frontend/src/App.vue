@@ -45,25 +45,32 @@ import ModalLibro from "./components/ModalLibro.vue";
 const libros = ref([]);
 const libroSeleccionado = ref(null);
 const tramaSeleccionada = ref("");
+const isLoading = ref(true);
+const error = ref(null);
 
-// Categorías modificadas para que sean más cortas como en la imagen
 const tramas = [
-  "Aventura",
-  "Romántica",
-  "Suspenso",
-  "Terror",
-  "Ciencia Ficción",
-  "Fantasía",
-  "Histórica",
-  "Drama",
-  "Biográfica",
-  "Coming of Age",
-  "Comedia",
+  "Aventura", "Romántica", "Suspenso", "Terror", 
+  "Ciencia Ficción", "Fantasía", "Histórica", "Drama", 
+  "Biográfica", "Coming of Age", "Comedia"
 ];
 
 async function cargarLibros() {
-  const res = await fetch("http://localhost:3000/api/libros");
-  libros.value = await res.json();
+  try {
+    isLoading.value = true;
+    const res = await fetch("http://localhost:3000/api/libros");
+    
+    if (!res.ok) {
+      throw new Error(`Error ${res.status}: ${res.statusText}`);
+    }
+    
+    libros.value = await res.json();
+    error.value = null;
+  } catch (err) {
+    error.value = "No se pudieron cargar los libros. Intente nuevamente más tarde.";
+    console.error("Error al cargar libros:", err);
+  } finally {
+    isLoading.value = false;
+  }
 }
 
 function abrirModal(libro) {
