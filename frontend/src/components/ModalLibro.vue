@@ -2,6 +2,11 @@
   <div class="modal-overlay" @click.self="cerrar">
     <div class="modal-container">
       <button class="modal-cerrar" @click="cerrar">×</button>
+      <div class="modal-actions">
+        <button class="descargar-btn" @click="descargarLibro">
+          <i class="fas fa-download"></i> Descargar PDF
+        </button>
+      </div>
       <iframe 
         :src="archivo" 
         class="pdf-viewer"
@@ -12,7 +17,9 @@
 </template>
 
 <script setup>
-defineProps({
+import { defineProps, defineEmits } from 'vue';
+
+const props = defineProps({
   archivo: {
     type: String,
     required: true
@@ -23,6 +30,21 @@ const emit = defineEmits(['cerrar']);
 
 const cerrar = () => {
   emit('cerrar');
+};
+
+const descargarLibro = () => {
+  // Crear un enlace temporal para la descarga
+  const link = document.createElement('a');
+  link.href = props.archivo;
+  
+  // Extraer el nombre del archivo de la URL
+  const nombreArchivo = props.archivo.split('/').pop() || 'libro.pdf';
+  link.download = nombreArchivo;
+  
+  // Simular click en el enlace
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 };
 </script>
 
@@ -49,6 +71,36 @@ const cerrar = () => {
   position: relative;
   padding: 20px;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-actions {
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.descargar-btn {
+  background-color: #42b983;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.3s;
+}
+
+.descargar-btn:hover {
+  background-color: #3aa876;
+}
+
+.descargar-btn i {
+  font-size: 1rem;
 }
 
 .modal-cerrar {
@@ -69,6 +121,8 @@ const cerrar = () => {
 
 .pdf-viewer {
   width: 100%;
-  height: 100%;
+  flex-grow: 1;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
 }
 </style>

@@ -1,38 +1,42 @@
 <template>
-  <div class="biblioteca-container">
-    <h1 class="titulo-principal">Biblioteca Online</h1>
+  <div class="biblioteca">
+    <h1 class="biblioteca__titulo">📚 Biblioteca Online</h1>
+
+    <p class="biblioteca__descripcion">
+      Explora una colección única de libros digitales con categorías como aventura, romance, suspenso, terror, ciencia ficción, fantasía, drama, biografías y más. Vive emociones intensas y viajes inolvidables desde cualquier lugar.
+    </p>
 
     <!-- Menú de categorías -->
-    <div class="menu-categorias">
-      <button 
-        v-for="trama in tramas" 
-        :key="trama"
-        :class="{ 'active': tramaSeleccionada === trama }"
-        @click="tramaSeleccionada = trama"
-      >
-        {{ trama }}
-      </button>
-      <button 
-        :class="{ 'active': !tramaSeleccionada }"
+    <nav class="categorias">
+      <button
+        :class="['categorias__btn', { active: !tramaSeleccionada }]"
         @click="tramaSeleccionada = ''"
       >
         Todos
       </button>
-    </div>
+      <button
+        v-for="trama in tramas"
+        :key="trama"
+        :class="['categorias__btn', { active: tramaSeleccionada === trama }]"
+        @click="tramaSeleccionada = trama"
+      >
+        {{ trama }}
+      </button>
+    </nav>
 
-    <!-- Mensaje de carga/error -->
-    <div v-if="isLoading" class="cargando">Cargando libros...</div>
-    <div v-if="error" class="error">{{ error }}</div>
+    <!-- Mensajes -->
+    <p v-if="isLoading" class="mensaje mensaje--cargando">📦 Cargando libros...</p>
+    <p v-if="error" class="mensaje mensaje--error">⚠️ {{ error }}</p>
 
-    <!-- Grid de libros -->
-    <div class="libros-grid">
+    <!-- Libros -->
+    <section class="libros">
       <LibroCard
         v-for="libro in librosFiltrados"
         :key="libro.id"
         :libro="libro"
         @seleccionar="abrirModal"
       />
-    </div>
+    </section>
 
     <!-- Modal -->
     <ModalLibro
@@ -48,136 +52,166 @@ import { ref, onMounted, computed } from "vue";
 import LibroCard from "./components/LibroCard.vue";
 import ModalLibro from "./components/ModalLibro.vue";
 
-// Estado de la aplicación
 const libros = ref([]);
 const libroSeleccionado = ref(null);
 const tramaSeleccionada = ref("");
 const isLoading = ref(true);
 const error = ref(null);
 
-// Categorías
 const tramas = [
   "Aventura", "Romántica", "Suspenso", "Terror",
   "Ciencia Ficción", "Fantasía", "Histórica", "Drama",
   "Biográfica", "Coming of Age", "Comedia"
 ];
 
-// Cargar libros desde la API
-async function cargarLibros() {
+const cargarLibros = async () => {
   try {
     isLoading.value = true;
     error.value = null;
-    const response = await fetch("http://localhost:3000/api/libros");
-    
-    if (!response.ok) {
-      throw new Error(`Error al cargar libros: ${response.status}`);
-    }
-    
-    libros.value = await response.json();
+    const res = await fetch("http://localhost:3000/api/libros");
+    if (!res.ok) throw new Error(`Error: ${res.status}`);
+    libros.value = await res.json();
   } catch (err) {
     error.value = "No se pudieron cargar los libros. Intente nuevamente más tarde.";
-    console.error("Error:", err);
   } finally {
     isLoading.value = false;
   }
-}
+};
 
-// Funciones del modal
-function abrirModal(libro) {
-  libroSeleccionado.value = libro;
-}
+const abrirModal = (libro) => libroSeleccionado.value = libro;
+const cerrarModal = () => libroSeleccionado.value = null;
 
-function cerrarModal() {
-  libroSeleccionado.value = null;
-}
+const librosFiltrados = computed(() =>
+  tramaSeleccionada.value
+    ? libros.value.filter(libro => libro.trama === tramaSeleccionada.value)
+    : libros.value
+);
 
-// Computed: libros filtrados por categoría
-const librosFiltrados = computed(() => {
-  if (!tramaSeleccionada.value) return libros.value;
-  return libros.value.filter(libro => libro.trama === tramaSeleccionada.value);
-});
-
-// Cargar libros al montar el componente
-onMounted(() => {
-  cargarLibros();
-});
+onMounted(() => cargarLibros());
 </script>
 
 <style>
-.biblioteca-container {
+:root {
+  --primario: #42b983;
+  --gradiente: linear-gradient(to right, #42b983, #2ecc71);
+  --fondo: #f3f7f9;
+  --sombra: rgba(0, 0, 0, 0.1);
+}
+
+.biblioteca {
   max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
+  margin: auto;
+  padding: 2rem;
+  background: var(--fondo);
+  border-radius: 16px;
+  box-shadow: 0 8px 30px var(--sombra);
+  animation: fadeIn 0.6s ease;
 }
 
-.titulo-principal {
+.biblioteca__titulo {
   text-align: center;
-  margin-bottom: 30px;
-  color: #2c3e50;
+  font-size: 3rem;
+  font-weight: bold;
+  background: var(--gradiente);
+  -webkit-background-clip: text;
+  color: transparent;
+  margin-bottom: 1.5rem;
 }
 
-.menu-categorias {
+.biblioteca__descripcion {
+  max-width: 900px;
+  margin: 0 auto 2rem;
+  padding: 1.5rem;
+  background: white;
+  border-left: 6px solid var(--primario);
+  border-radius: 0.75rem;
+  font-size: 1.1rem;
+  color: #333;
+  line-height: 1.7;
+  box-shadow: 0 4px 12px var(--sombra);
+}
+
+/* Categorías */
+.categorias {
   display: flex;
-  overflow-x: auto;
-  gap: 10px;
-  padding: 15px 0;
-  margin-bottom: 30px;
-  border-bottom: 1px solid #eee;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-bottom: 2rem;
 }
 
-.menu-categorias button {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 20px;
-  background-color: #f0f0f0;
+.categorias__btn {
+  padding: 0.6rem 1.4rem;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: #e9f5f1;
+  color: #333;
   cursor: pointer;
-  white-space: nowrap;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  font-weight: 500;
   transition: all 0.3s ease;
 }
 
-.menu-categorias button:hover {
-  background-color: #e0e0e0;
+.categorias__btn:hover {
+  background: var(--primario);
+  color: white;
+  transform: scale(1.05);
 }
 
-.menu-categorias button.active {
-  background-color: #42b983;
+.categorias__btn.active {
+  background: var(--primario);
   color: white;
   font-weight: bold;
+  box-shadow: 0 4px 10px var(--sombra);
 }
 
-.libros-grid {
+/* Libros */
+.libros {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 25px;
-  padding: 20px 0;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 2rem;
 }
 
-.cargando, .error {
+/* Mensajes */
+.mensaje {
   text-align: center;
-  padding: 20px;
-  margin: 20px 0;
-  border-radius: 5px;
+  padding: 1rem;
+  margin: 2rem 0;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 500;
 }
 
-.cargando {
-  background-color: #f8f9fa;
-  color: #6c757d;
+.mensaje--cargando {
+  background: #e8f5e9;
+  color: #388e3c;
 }
 
-.error {
-  background-color: #f8d7da;
-  color: #721c24;
+.mensaje--error {
+  background: #f8d7da;
+  color: #c62828;
 }
 
-@media (max-width: 768px) {
-  .menu-categorias {
-    padding-left: 10px;
-    padding-right: 10px;
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
-  
-  .libros-grid {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .libros {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+
+  .biblioteca__titulo {
+    font-size: 2rem;
   }
 }
 </style>
