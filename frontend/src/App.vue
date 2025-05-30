@@ -1,73 +1,65 @@
 <template>
-  <div class="app-container">
-    <header>
-      <h1>📚 Biblioteca en Línea</h1>
-      <p>Encuentra y descarga tus libros favoritos</p>
-    </header>
+  <div>
+    <h1 class="titulo-principal">Biblioteca Online</h1>
+    <div class="libros-grid">
+      <LibroCard 
+        v-for="libro in libros" 
+        :key="libro.id" 
+        :libro="libro" 
+        @seleccionar="abrirModal" />
+    </div>
 
-    <main>
-      <div class="libros-grid">
-        <LibroCard
-          v-for="libro in libros"
-          :key="libro.id"
-          :libro="libro"
-        />
-      </div>
-    </main>
-
-    <footer>
-      <small>© 2025 Biblioteca en Línea - Todos los derechos reservados</small>
-    </footer>
+    <ModalLibro 
+      v-if="libroSeleccionado" 
+      :archivo="libroSeleccionado.archivo" 
+      @cerrar="cerrarModal" />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import LibroCard from './components/LibroCard.vue'
+import ModalLibro from './components/ModalLibro.vue'
 
 const libros = ref([])
+const libroSeleccionado = ref(null)
 
-onMounted(async () => {
+async function cargarLibros() {
   const res = await fetch('http://localhost:3000/api/libros')
   libros.value = await res.json()
+}
+
+function abrirModal(libro) {
+  libroSeleccionado.value = libro
+}
+
+function cerrarModal() {
+  libroSeleccionado.value = null
+}
+
+onMounted(() => {
+  cargarLibros()
 })
 </script>
 
-<style scoped>
-.app-container {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 1rem;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #333;
-}
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
 
-header {
+.titulo-principal {
+  font-family: 'Montserrat', sans-serif;
   text-align: center;
-  margin-bottom: 2rem;
-}
-
-header h1 {
-  font-size: 2.5rem;
-  margin-bottom: 0.3rem;
+  margin: 2rem 0 1rem;
+  font-weight: 700;
   color: #2c3e50;
-}
-
-header p {
-  font-size: 1.2rem;
-  color: #555;
+  font-size: 2.4rem;
 }
 
 .libros-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill,minmax(280px,1fr));
   gap: 1.5rem;
-}
-
-footer {
-  margin-top: 3rem;
-  text-align: center;
-  color: #888;
-  font-size: 0.9rem;
+  padding: 0 1rem 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 </style>

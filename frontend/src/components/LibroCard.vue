@@ -1,5 +1,5 @@
 <template>
-  <div class="card" @click="abrirLibro" role="button" tabindex="0" @keydown.enter="abrirLibro">
+  <div class="card" @click="seleccionarLibro" role="button" tabindex="0" @keydown.enter="seleccionarLibro">
     <img :src="libro.imagen" :alt="libro.titulo" />
     <div class="info">
       <h2>{{ libro.titulo }}</h2>
@@ -11,82 +11,90 @@
 </template>
 
 <script setup>
-defineProps(['libro'])
+const props = defineProps({
+  libro: Object
+})
+const emit = defineEmits(['seleccionar'])
 
-function abrirLibro() {
-  window.open(libro.archivo, '_blank')
+function seleccionarLibro() {
+  emit('seleccionar', props.libro)
 }
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+
 .card {
   cursor: pointer;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 6px rgb(0 0 0 / 0.1);
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.1);
   display: flex;
   flex-direction: column;
-  background: #fff;
-  transition: transform 0.2s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  font-family: 'Montserrat', sans-serif;
   outline: none;
 }
 
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgb(0 0 0 / 0.15);
-}
-
+.card:hover,
 .card:focus {
-  box-shadow: 0 0 0 3px #2980b9;
+  transform: translateY(-6px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 }
 
 img {
   width: 100%;
   height: 280px;
   object-fit: cover;
+  border-bottom: 3px solid #2980b9;
 }
 
 .info {
-  padding: 1rem;
-  flex-grow: 1;
+  padding: 1.2rem 1.5rem 1.8rem;
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
   justify-content: space-between;
 }
 
 h2 {
-  font-size: 1.25rem;
-  margin: 0 0 0.5rem;
-  color: #34495e;
+  font-size: 1.4rem;
+  margin: 0 0 0.3rem;
+  color: #2c3e50;
+  font-weight: 600;
 }
 
 .autor {
   font-size: 1rem;
   color: #7f8c8d;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.8rem;
   font-style: italic;
+  letter-spacing: 0.03em;
 }
 
 .descripcion {
-  flex-grow: 1;
-  font-size: 0.9rem;
-  color: #555;
+  font-size: 0.95rem;
+  color: #555d66;
   margin-bottom: 1rem;
+  flex-grow: 1;
+  line-height: 1.4;
 }
 
 .btn-download {
-  text-align: center;
+  align-self: flex-start;
   background-color: #2980b9;
   color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  text-decoration: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 24px;
   font-weight: 600;
-  transition: background-color 0.3s ease;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(41, 128, 185, 0.4);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .btn-download:hover {
   background-color: #3498db;
+  box-shadow: 0 4px 14px rgba(52, 152, 219, 0.6);
 }
 </style>
