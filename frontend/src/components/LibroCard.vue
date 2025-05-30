@@ -4,6 +4,7 @@
     <div class="info">
       <h2>{{ libro.titulo }}</h2>
       <p class="autor">{{ libro.autor }}</p>
+      <p class="descripcion">{{ libro.descripcion }}</p>
       <a :href="libro.archivo" download class="btn-download" @click.stop>📥 Descargar</a>
     </div>
   </div>
@@ -63,8 +64,15 @@ h2 {
 .autor {
   font-size: 1rem;
   color: #7f8c8d;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   font-style: italic;
+}
+
+.descripcion {
+  flex-grow: 1;
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 1rem;
 }
 
 .btn-download {
