@@ -22,7 +22,7 @@ const libros = [
     titulo: "La isla del tesoro",
     autor: "Robert Louis Stevenson",
     descripcion: "Clásica novela de aventuras sobre la búsqueda de un tesoro pirata.",
-    imagen: "http://localhost:3000/images/isla-tescro.png", // Cambiado a isla-tescro.png
+    imagen: "http://localhost:3000/images/isla-tesoro.png",
     archivo: "http://localhost:3000/libros/isla-tesoro.pdf",
     trama: "Aventura"
   },
@@ -40,7 +40,7 @@ const libros = [
     titulo: "Robinson Crusoe",
     autor: "Daniel Defoe",
     descripcion: "Historia de supervivencia de un náufrago en una isla desierta.",
-    imagen: "http://localhost:3000/images/robinson-cruxe.jpg", // Cambiado a robinson-cruxe.jpg
+    imagen: "http://localhost:3000/images/robinson-crusoe.jpg",
     archivo: "http://localhost:3000/libros/robinson-crusoe.pdf",
     trama: "Aventura",
   },
@@ -49,7 +49,7 @@ const libros = [
     titulo: "Los viajes de Gulliver",
     autor: "Jonathan Swift",
     descripcion: "Sátira social disfrazada de relato de viajes fantásticos.",
-    imagen: "http://localhost:3000/images/viajes-guilliver.jpg", // Cambiado a viajes-guilliver.jpg
+    imagen: "http://localhost:3000/images/viajes-gulliver.jpg",
     archivo: "http://localhost:3000/libros/viajes-gulliver.pdf",
     trama: "Aventura",
   },
@@ -78,7 +78,7 @@ const libros = [
     titulo: "Cumbres borrascosas",
     autor: "Emily Brontë",
     descripcion: "Intensa historia de amor y venganza en los páramos de Yorkshire.",
-    imagen: "http://localhost:3000/images/cumbrez-borracosas.jpg", // Cambiado a cumbrez-borracosas.jpg
+    imagen: "http://localhost:3000/images/cumbres-borrascosas.jpg",
     archivo: "http://localhost:3000/libros/cumbres-borrascosas.pdf",
     trama: "Romántica",
   },
@@ -87,7 +87,7 @@ const libros = [
     titulo: "El amor en los tiempos del cólera",
     autor: "Gabriel García Márquez",
     descripcion: "Historia de amor que perdura a través de los años.",
-    imagen: "http://localhost:3000/images/amor-tempo-s-colera.png", // Cambiado a amor-tempo-s-colera.png
+    imagen: "http://localhost:3000/images/amor-tiempos-colera.png",
     archivo: "http://localhost:3000/libros/amor-tiempos-colera.pdf",
     trama: "Romántica",
   },
@@ -96,7 +96,7 @@ const libros = [
     titulo: "Jane Eyre",
     autor: "Charlotte Brontë",
     descripcion: "Novela gótica sobre una institutriz y su amor por el misterioso Mr. Rochester.",
-    imagen: "http://localhost:3000/images/jane-eyte.jpg", // Cambiado a jane-eyte.jpg
+    imagen: "http://localhost:3000/images/jane-eyre.jpg",
     archivo: "http://localhost:3000/libros/jane-eyre.pdf",
     trama: "Romántica",
   },
@@ -105,7 +105,7 @@ const libros = [
     titulo: "Bajo la misma estrella",
     autor: "John Green",
     descripcion: "Conmovedora historia de amor entre dos adolescentes con cáncer.",
-    imagen: "http://localhost:3000/images/bajo-minna-eitrella.jpg", // Cambiado a bajo-minna-eitrella.jpg
+    imagen: "http://localhost:3000/images/bajo-misma-estrella.jpg",
     archivo: "http://localhost:3000/libros/bajo-misma-estrella.pdf",
     trama: "Romántica",
   },
@@ -125,7 +125,7 @@ const libros = [
     titulo: "La chica del tren",
     autor: "Paula Hawkins",
     descripcion: "Thriller psicológico sobre un crimen visto desde un tren.",
-    imagen: "http://localhost:3000/images/chica-dei-tre-n.jpg", // Cambiado a chica-dei-tre-n.jpg
+    imagen: "http://localhost:3000/images/chica-del-tren.jpg",
     archivo: "http://localhost:3000/libros/chica-del-tren.pdf",
     trama: "Suspenso",
   },
@@ -134,7 +134,7 @@ const libros = [
     titulo: "Gone Girl",
     autor: "Gillian Flynn",
     descripcion: "Intriga psicológica sobre una desaparición misteriosa.",
-    imagen: "http://localhost:3000/images/gone-grill.jpg", // Cambiado a gone-grill.jpg
+    imagen: "http://localhost:3000/images/gone-girl.jpg",
     archivo: "http://localhost:3000/libros/gone-girl.pdf",
     trama: "Suspenso",
   },
@@ -152,7 +152,7 @@ const libros = [
     titulo: "El silencio de los corderos",
     autor: "Thomas Harris",
     descripcion: "Thriller sobre un asesino en serie y un agente del FBI.",
-    imagen: "http://localhost:3000/images/silencio-cordero.jpg", // Cambiado a silencio-cordero.jpg
+    imagen: "http://localhost:3000/images/silencio-corderos.jpg",
     archivo: "http://localhost:3000/libros/silencio-corderos.pdf",
     trama: "Suspenso",
   },
@@ -172,7 +172,7 @@ const libros = [
     titulo: "It",
     autor: "Stephen King",
     descripcion: "Historia de un grupo de niños que enfrentan a una entidad malévola.",
-    imagen: "http://localhost:3000/images/h.png", // Cambiado a h.png
+    imagen: "http://localhost:3000/images/it.png",
     archivo: "http://localhost:3000/libros/it.pdf",
     trama: "Terror",
   },
@@ -199,7 +199,7 @@ const libros = [
     titulo: "El resplandor",
     autor: "Stephen King",
     descripcion: "Un escritor y su familia cuidan un hotel aislado con presencia sobrenatural.",
-    imagen: "http://localhost:3000/images/resplandoi.jpg", // Cambiado a resplandoi.jpg
+    imagen: "http://localhost:3000/images/resplandor.jpg",
     archivo: "http://localhost:3000/libros/resplandor.pdf",
     trama: "Terror",
   },
@@ -219,7 +219,7 @@ const libros = [
     titulo: "Fahrenheit 451",
     autor: "Ray Bradbury",
     descripcion: "Futuro donde los libros están prohibidos y los bomberos los queman.",
-    imagen: "http://localhost:3000/images/faltenheit-45-l.jpg", // Cambiado a faltenheit-45-l.jpg
+    imagen: "http://localhost:3000/images/fahrenheit-451.jpg",
     archivo: "http://localhost:3000/libros/fahrenheit-451.pdf",
     trama: "Ciencia Ficción",
   },
@@ -246,7 +246,7 @@ const libros = [
     titulo: "El juego de Ender",
     autor: "Orson Scott Card",
     descripcion: "Historia de un niño genio entrenado para defender a la Tierra.",
-    imagen: "http://localhost:3000/images/juego-ende.jpg", // Cambiado a juego-ende.jpg
+    imagen: "http://localhost:3000/images/juego-ender.jpg",
     archivo: "http://localhost:3000/libros/juego-ender.pdf",
     trama: "Ciencia Ficción",
   },
@@ -284,7 +284,7 @@ const libros = [
     titulo: "Las crónicas de Narnia",
     autor: "C.S. Lewis",
     descripcion: "Serie de fantasía sobre un mundo mágico accesible a través de un armario.",
-    imagen: "http://localhost:3000/images/narrisi.jpg", // Cambiado a narrisi.jpg
+    imagen: "http://localhost:3000/images/narnia.jpg",
     archivo: "http://localhost:3000/libros/narnia.pdf",
     trama: "Fantasía",
   },
@@ -293,7 +293,7 @@ const libros = [
     titulo: "El hobbit",
     autor: "J.R.R. Tolkien",
     descripcion: "Aventura de un hobbit que se une a una búsqueda para recuperar un tesoro.",
-    imagen: "http://localhost:3000/images/habbit.jpg", // Cambiado a habbit.jpg
+    imagen: "http://localhost:3000/images/hobbit.jpg",
     archivo: "http://localhost:3000/libros/hobbit.pdf",
     trama: "Fantasía",
   },
@@ -304,7 +304,7 @@ const libros = [
     titulo: "Los pilares de la Tierra",
     autor: "Ken Follett",
     descripcion: "Novela histórica sobre la construcción de una catedral en la Edad Media.",
-    imagen: "http://localhost:3000/images/pilare-tierra.jpg", // Cambiado a pilare-tierra.jpg
+    imagen: "http://localhost:3000/images/pilares-tierra.jpg",
     archivo: "http://localhost:3000/libros/pilares-tierra.pdf",
     trama: "Histórica",
   },
@@ -340,7 +340,7 @@ const libros = [
     titulo: "Sinuhé, el egipcio",
     autor: "Mika Waltari",
     descripcion: "Novela histórica sobre un médico en el antiguo Egipto.",
-    imagen: "http://localhost:3000/images/simile.jpg", // Cambiado a simile.jpg
+    imagen: "http://localhost:3000/images/sinuhe.jpg",
     archivo: "http://localhost:3000/libros/sinuhe.pdf",
     trama: "Histórica",
   },
@@ -351,7 +351,7 @@ const libros = [
     titulo: "Crimen y castigo",
     autor: "Fiódor Dostoievski",
     descripcion: "Drama psicológico sobre un estudiante que comete un crimen.",
-    imagen: "http://localhost:3000/images/crimen-casi-go.png", // Cambiado a crimen-casi-go.png
+    imagen: "http://localhost:3000/images/crimen-castigo.png",
     archivo: "http://localhost:3000/libros/crimen-castigo.pdf",
     trama: "Drama",
   },
@@ -360,7 +360,7 @@ const libros = [
     titulo: "La casa de los espíritus",
     autor: "Isabel Allende",
     descripcion: "Drama familiar que abarca varias generaciones en Latinoamérica.",
-    imagen: "http://localhost:3000/images/casa-espiritus-jpg", // Cambiado a casa-espiritus-jpg
+    imagen: "http://localhost:3000/images/casa-espiritus.jpg",
     archivo: "http://localhost:3000/libros/casa-espiritus.pdf",
     trama: "Drama",
   },
@@ -369,7 +369,7 @@ const libros = [
     titulo: "Matar a un ruiseñor",
     autor: "Harper Lee",
     descripcion: "Drama sobre racismo e injusticia en el sur de Estados Unidos.",
-    imagen: "http://localhost:3000/images/matar-ruisenot.jpg", // Cambiado a matar-ruisenot.jpg
+    imagen: "http://localhost:3000/images/matar-ruisenor.jpg",
     archivo: "http://localhost:3000/libros/matar-ruisenor.pdf",
     trama: "Drama",
   },
@@ -378,7 +378,7 @@ const libros = [
     titulo: "Las uvas de la ira",
     autor: "John Steinbeck",
     descripcion: "Drama sobre una familia de agricultores durante la Gran Depresión.",
-    imagen: "http://localhost:3000/images/uvas-tra.jpg", // Cambiado a uvas-tra.jpg
+    imagen: "http://localhost:3000/images/uvas-ira.jpg",
     archivo: "http://localhost:3000/libros/uvas-ira.pdf",
     trama: "Drama",
   },
@@ -387,7 +387,7 @@ const libros = [
     titulo: "Anna Karénina",
     autor: "León Tolstói",
     descripcion: "Tragedia sobre el adulterio y la sociedad rusa del siglo XIX.",
-    imagen: "http://localhost:3000/images/ama-karenin-a.jpg", // Cambiado a ama-karenin-a.jpg
+    imagen: "http://localhost:3000/images/anna-karenina.jpg",
     archivo: "http://localhost:3000/libros/anna-karenina.pdf",
     trama: "Drama",
   },
@@ -416,7 +416,7 @@ const libros = [
     titulo: "Einstein: su vida y su universo",
     autor: "Walter Isaacson",
     descripcion: "Biografía completa del famoso físico.",
-    imagen: "http://localhost:3000/images/einstein.jpg",
+    imagen: "http://localhost:3000/images/einstein.jpeg",
     archivo: "http://localhost:3000/libros/einstein.pdf",
     trama: "Biográfica",
   },
@@ -434,7 +434,7 @@ const libros = [
     titulo: "Agatha Christie: Una autobiografía",
     autor: "Agatha Christie",
     descripcion: "La vida de la famosa escritora de novelas de misterio.",
-    imagen: "http://localhost:3000/images/agatha-christ-fe.jpg", // Cambiado a agatha-christ-fe.jpg
+    imagen: "http://localhost:3000/images/agatha-christie.jpg",
     archivo: "http://localhost:3000/libros/agatha-christie.pdf",
     trama: "Biográfica",
   },
@@ -454,7 +454,7 @@ const libros = [
     titulo: "Las ventajas de ser invisible",
     autor: "Stephen Chbosky",
     descripcion: "Historia epistolar sobre un adolescente que navega por la vida.",
-    imagen: "http://localhost:3000/images/ventajas-invisible.jpg", // Cambiado a ventajas-invisible.jpg
+    imagen: "http://localhost:3000/images/ventajas-invisible.jpg",
     archivo: "http://localhost:3000/libros/ventajas-invisible.pdf",
     trama: "Coming of Age",
   },
@@ -481,7 +481,7 @@ const libros = [
     titulo: "Persépolis",
     autor: "Marjane Satrapi",
     descripcion: "Novela gráfica autobiográfica sobre crecer durante la Revolución Iraní.",
-    imagen: "http://localhost:3000/images/petsepolis.jpg", // Cambiado a petsepolis.jpg
+    imagen: "http://localhost:3000/images/persepolis.jpg",
     archivo: "http://localhost:3000/libros/persepolis.pdf",
     trama: "Coming of Age",
   },
@@ -501,7 +501,7 @@ const libros = [
     titulo: "Bridget Jones's Diary",
     autor: "Helen Fielding",
     descripcion: "Diario cómico de una mujer soltera en Londres.",
-    imagen: "http://localhost:3000/images/bridge-lymes-jpg", // Cambiado a bridge-lymes-jpg
+    imagen: "http://localhost:3000/images/bridget-jones.jpg",
     archivo: "http://localhost:3000/libros/bridget-jones.pdf",
     trama: "Comedia",
   },
@@ -510,7 +510,7 @@ const libros = [
     titulo: "Tres hombres en un bote",
     autor: "Jerome K. Jerome",
     descripcion: "Humorística crónica de un viaje en bote por el Támesis.",
-    imagen: "http://localhost:3000/images/tree-hombres-bote.jpg", // Cambiado a tree-hombres-bote.jpg
+    imagen: "http://localhost:3000/images/tres-hombres-bote.jpg",
     archivo: "http://localhost:3000/libros/tres-hombres-bote.pdf",
     trama: "Comedia",
   },
