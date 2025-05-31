@@ -15,7 +15,7 @@
         Todos
       </button>
       <button
-        v-for="trama in tramas"
+        v-for="trama in tramasUnicas"
         :key="trama"
         :class="['categorias__btn', { active: tramaSeleccionada === trama }]"
         @click="tramaSeleccionada = trama"
@@ -26,10 +26,13 @@
 
     <!-- Mensajes -->
     <p v-if="isLoading" class="mensaje mensaje--cargando">📦 Cargando libros...</p>
-    <p v-if="error" class="mensaje mensaje--error">⚠️ {{ error }}</p>
+    <p v-else-if="error" class="mensaje mensaje--error">⚠️ {{ error }}</p>
+    <p v-else-if="librosFiltrados.length === 0" class="mensaje mensaje--info">
+      📭 No se encontraron libros en esta categoría
+    </p>
 
     <!-- Libros -->
-    <section class="libros">
+    <section v-else class="libros">
       <LibroCard
         v-for="libro in librosFiltrados"
         :key="libro.id"
@@ -41,7 +44,7 @@
     <!-- Modal -->
     <ModalLibro
       v-if="libroSeleccionado"
-      :archivo="libroSeleccionado.archivo"
+      :libro="libroSeleccionado"
       @cerrar="cerrarModal"
     />
   </div>
@@ -58,36 +61,43 @@ const tramaSeleccionada = ref("");
 const isLoading = ref(true);
 const error = ref(null);
 
-const tramas = [
-  "Aventura", "Romántica", "Suspenso", "Terror",
-  "Ciencia Ficción", "Fantasía", "Histórica", "Drama",
-  "Biográfica", "Coming of Age", "Comedia"
-];
+// Categorías dinámicas basadas en los libros disponibles
+const tramasUnicas = computed(() => {
+  const tramas = new Set(libros.value.map(libro => libro.trama));
+  return Array.from(tramas).sort();
+});
 
 const cargarLibros = async () => {
   try {
     isLoading.value = true;
     error.value = null;
     const res = await fetch("http://localhost:3000/api/libros");
-    if (!res.ok) throw new Error(`Error: ${res.status}`);
+    if (!res.ok) throw new Error(`Error ${res.status}: ${res.statusText}`);
     libros.value = await res.json();
   } catch (err) {
+    console.error("Error al cargar libros:", err);
     error.value = "No se pudieron cargar los libros. Intente nuevamente más tarde.";
   } finally {
     isLoading.value = false;
   }
 };
 
-const abrirModal = (libro) => libroSeleccionado.value = libro;
-const cerrarModal = () => libroSeleccionado.value = null;
+const abrirModal = (libro) => {
+  libroSeleccionado.value = libro;
+};
 
-const librosFiltrados = computed(() =>
-  tramaSeleccionada.value
-    ? libros.value.filter(libro => libro.trama === tramaSeleccionada.value)
-    : libros.value
-);
+const cerrarModal = () => {
+  libroSeleccionado.value = null;
+};
 
-onMounted(() => cargarLibros());
+const librosFiltrados = computed(() => {
+  if (!tramaSeleccionada.value) return libros.value;
+  return libros.value.filter(libro => libro.trama === tramaSeleccionada.value);
+});
+
+onMounted(() => {
+  cargarLibros();
+});
 </script>
 
 <style>
@@ -96,13 +106,29 @@ onMounted(() => cargarLibros());
   --gradiente: linear-gradient(to right, #42b983, #2ecc71);
   --fondo: #f3f7f9;
   --sombra: rgba(0, 0, 0, 0.1);
+  --error: #e74c3c;
+  --exito: #2ecc71;
+  --info: #3498db;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  background-color: #f8fafc;
+  padding: 20px;
 }
 
 .biblioteca {
   max-width: 1200px;
-  margin: auto;
+  margin: 0 auto;
   padding: 2rem;
-  background: var(--fondo);
+  background: white;
   border-radius: 16px;
   box-shadow: 0 8px 30px var(--sombra);
   animation: fadeIn 0.6s ease;
@@ -110,25 +136,28 @@ onMounted(() => cargarLibros());
 
 .biblioteca__titulo {
   text-align: center;
-  font-size: 3rem;
-  font-weight: bold;
+  font-size: 2.5rem;
+  font-weight: 700;
   background: var(--gradiente);
   -webkit-background-clip: text;
+  background-clip: text;
   color: transparent;
   margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e2e8f0;
 }
 
 .biblioteca__descripcion {
-  max-width: 900px;
+  max-width: 800px;
   margin: 0 auto 2rem;
-  padding: 1.5rem;
+  padding: 1.25rem;
   background: white;
-  border-left: 6px solid var(--primario);
-  border-radius: 0.75rem;
-  font-size: 1.1rem;
-  color: #333;
+  border-left: 4px solid var(--primario);
+  border-radius: 0.5rem;
+  font-size: 1.05rem;
+  color: #4a5568;
   line-height: 1.7;
-  box-shadow: 0 4px 12px var(--sombra);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 /* Categorías */
@@ -137,59 +166,68 @@ onMounted(() => cargarLibros());
   flex-wrap: wrap;
   gap: 0.75rem;
   justify-content: center;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
 }
 
 .categorias__btn {
-  padding: 0.6rem 1.4rem;
-  border: 2px solid transparent;
+  padding: 0.5rem 1.25rem;
+  border: none;
   border-radius: 999px;
-  background: #e9f5f1;
-  color: #333;
+  background: #edf2f7;
+  color: #4a5568;
   cursor: pointer;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 500;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .categorias__btn:hover {
   background: var(--primario);
   color: white;
-  transform: scale(1.05);
+  transform: translateY(-2px);
 }
 
 .categorias__btn.active {
   background: var(--primario);
   color: white;
-  font-weight: bold;
-  box-shadow: 0 4px 10px var(--sombra);
+  font-weight: 600;
+  box-shadow: 0 4px 6px rgba(66, 185, 131, 0.3);
 }
 
 /* Libros */
 .libros {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.5rem;
+  padding: 0.5rem;
 }
 
 /* Mensajes */
 .mensaje {
   text-align: center;
-  padding: 1rem;
+  padding: 1.25rem;
   margin: 2rem 0;
   border-radius: 0.5rem;
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 500;
 }
 
 .mensaje--cargando {
-  background: #e8f5e9;
-  color: #388e3c;
+  background: #ebf8ff;
+  color: #3182ce;
+  border-left: 4px solid #3182ce;
 }
 
 .mensaje--error {
-  background: #f8d7da;
-  color: #c62828;
+  background: #fff5f5;
+  color: var(--error);
+  border-left: 4px solid var(--error);
+}
+
+.mensaje--info {
+  background: #f0fff4;
+  color: #2f855a;
+  border-left: 4px solid #38a169;
 }
 
 /* Animaciones */
@@ -206,12 +244,32 @@ onMounted(() => cargarLibros());
 
 /* Responsive */
 @media (max-width: 768px) {
-  .libros {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  .biblioteca {
+    padding: 1.5rem;
   }
-
+  
   .biblioteca__titulo {
     font-size: 2rem;
+  }
+  
+  .libros {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .biblioteca {
+    padding: 1rem;
+  }
+  
+  .categorias {
+    gap: 0.5rem;
+  }
+  
+  .categorias__btn {
+    padding: 0.4rem 1rem;
+    font-size: 0.8rem;
   }
 }
 </style>
