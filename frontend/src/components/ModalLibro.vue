@@ -7,11 +7,11 @@
           <i class="fas fa-download"></i> Descargar PDF
         </button>
       </div>
-      <iframe 
-        :src="archivo" 
-        class="pdf-viewer"
-        frameborder="0"
-      ></iframe>
+      <iframe
+  :src="libro.archivo"
+  class="pdf-viewer"
+  frameborder="0"
+/>
     </div>
   </div>
 </template>
@@ -20,8 +20,8 @@
 import { defineProps, defineEmits } from 'vue';
 
 const props = defineProps({
-  archivo: {
-    type: String,
+  libro: {
+    type: Object,
     required: true
   }
 });
@@ -33,20 +33,16 @@ const cerrar = () => {
 };
 
 const descargarLibro = () => {
-  // Crear un enlace temporal para la descarga
   const link = document.createElement('a');
-  link.href = props.archivo;
-  
-  // Extraer el nombre del archivo de la URL
-  const nombreArchivo = props.archivo.split('/').pop() || 'libro.pdf';
+  link.href = props.libro.archivo;
+  const nombreArchivo = props.libro.archivo.split('/').pop() || 'libro.pdf';
   link.download = nombreArchivo;
-  
-  // Simular click en el enlace
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
 };
 </script>
+
 
 <style>
 .modal-overlay {

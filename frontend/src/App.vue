@@ -6,7 +6,15 @@
       Explora una colección única de libros digitales con categorías como aventura, romance, suspenso, terror, ciencia ficción, fantasía, drama, biografías y más. Vive emociones intensas y viajes inolvidables desde cualquier lugar.
     </p>
 
-    <!-- Menú de categorías -->
+    <!-- Buscador -->
+    <input
+      v-model="busqueda"
+      type="text"
+      placeholder="🔍 Buscar por título..."
+      class="buscador"
+    />
+
+    <!-- Tabs de categorías -->
     <nav class="categorias">
       <button
         :class="['categorias__btn', { active: !tramaSeleccionada }]"
@@ -28,7 +36,7 @@
     <p v-if="isLoading" class="mensaje mensaje--cargando">📦 Cargando libros...</p>
     <p v-else-if="error" class="mensaje mensaje--error">⚠️ {{ error }}</p>
     <p v-else-if="librosFiltrados.length === 0" class="mensaje mensaje--info">
-      📭 No se encontraron libros en esta categoría
+      📭 No se encontraron libros con esos criterios.
     </p>
 
     <!-- Libros -->
@@ -58,15 +66,17 @@ import ModalLibro from "./components/ModalLibro.vue";
 const libros = ref([]);
 const libroSeleccionado = ref(null);
 const tramaSeleccionada = ref("");
+const busqueda = ref("");
 const isLoading = ref(true);
 const error = ref(null);
 
-// Categorías dinámicas basadas en los libros disponibles
+// Categorías únicas
 const tramasUnicas = computed(() => {
   const tramas = new Set(libros.value.map(libro => libro.trama));
   return Array.from(tramas).sort();
 });
 
+// Cargar libros desde la API
 const cargarLibros = async () => {
   try {
     isLoading.value = true;
@@ -82,17 +92,21 @@ const cargarLibros = async () => {
   }
 };
 
+// Modal
 const abrirModal = (libro) => {
   libroSeleccionado.value = libro;
 };
-
 const cerrarModal = () => {
   libroSeleccionado.value = null;
 };
 
+// Filtrado por categoría y título
 const librosFiltrados = computed(() => {
-  if (!tramaSeleccionada.value) return libros.value;
-  return libros.value.filter(libro => libro.trama === tramaSeleccionada.value);
+  return libros.value.filter(libro => {
+    const coincideTrama = !tramaSeleccionada.value || libro.trama === tramaSeleccionada.value;
+    const coincideBusqueda = libro.titulo.toLowerCase().includes(busqueda.value.toLowerCase());
+    return coincideTrama && coincideBusqueda;
+  });
 });
 
 onMounted(() => {
@@ -119,32 +133,29 @@ onMounted(() => {
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  line-height: 1.6;
   background-color: #f8fafc;
   padding: 20px;
 }
 
 .biblioteca {
   max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 8px 30px var(--sombra);
+  margin: auto;
+  padding: 3rem 2rem;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
   animation: fadeIn 0.6s ease;
 }
 
+/* Título */
 .biblioteca__titulo {
+  font-size: 3rem;
+  font-weight: bold;
   text-align: center;
-  font-size: 2.5rem;
-  font-weight: 700;
-  background: var(--gradiente);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid #e2e8f0;
+  color: #222;
+  margin-bottom: 1rem;
+  text-shadow: 1px 1px 2px #c0f0d2;
 }
 
 .biblioteca__descripcion {
@@ -158,6 +169,24 @@ body {
   color: #4a5568;
   line-height: 1.7;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Buscador */
+.buscador {
+  display: block;
+  width: 100%;
+  max-width: 500px;
+  margin: 1rem auto 2rem;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 2px solid var(--primario);
+  border-radius: 12px;
+  outline: none;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  transition: all 0.2s ease;
+}
+.buscador:focus {
+  border-color: #2ecc71;
 }
 
 /* Categorías */
@@ -189,7 +218,7 @@ body {
 
 .categorias__btn.active {
   background: var(--primario);
-  color: white;
+  color: black;
   font-weight: 600;
   box-shadow: 0 4px 6px rgba(66, 185, 131, 0.3);
 }
@@ -204,12 +233,14 @@ body {
 
 /* Mensajes */
 .mensaje {
-  text-align: center;
-  padding: 1.25rem;
-  margin: 2rem 0;
-  border-radius: 0.5rem;
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   font-weight: 500;
+  text-align: center;
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border-radius: 12px;
+  background-color: #edf2f7;
+  color: #2d3748;
 }
 
 .mensaje--cargando {
@@ -230,7 +261,7 @@ body {
   border-left: 4px solid #38a169;
 }
 
-/* Animaciones */
+/* Animación */
 @keyframes fadeIn {
   from {
     opacity: 0;
