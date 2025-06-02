@@ -3,8 +3,11 @@
     <h1 class="biblioteca__titulo">📚 Biblioteca Online</h1>
 
     <p class="biblioteca__descripcion">
-      Explora una colección única de libros digitales con categorías como aventura, romance, suspenso, terror, ciencia ficción, fantasía, drama, biografías y más. Vive emociones intensas y viajes inolvidables desde cualquier lugar.
-    </p>
+      "Descubre una biblioteca digital pensada para ti: lecturas emocionantes de
+      aventura, romance, suspenso, terror, ciencia ficción, fantasía, drama,
+      biografías y mucho más. Ideal para estudiantes, lectores curiosos y amantes
+      de los libros que quieren explorar nuevas historias desde cualquier lugar y
+      en cualquier momento."</p>
 
     <!-- Buscador -->
     <input
