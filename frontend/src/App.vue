@@ -133,7 +133,8 @@ onMounted(() => {
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f8fafc;
+  background: linear-gradient(to right, #74ebd5, #acb6e5);
+
   padding: 20px;
 }
 
@@ -141,7 +142,9 @@ body {
   max-width: 1200px;
   margin: auto;
   padding: 3rem 2rem;
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(230, 225, 255, 0.9);
+
+
   backdrop-filter: blur(10px);
   border-radius: 20px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
