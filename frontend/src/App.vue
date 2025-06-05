@@ -7,7 +7,22 @@
       aventura, romance, suspenso, terror, ciencia ficción, fantasía, drama,
       biografías y mucho más. Ideal para estudiantes, lectores curiosos y amantes
       de los libros que quieren explorar nuevas historias desde cualquier lugar y
-      en cualquier momento."</p>
+      en cualquier momento."
+    </p>
+
+    <!-- Botón para mostrar/ocultar formulario -->
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <button
+        @click="mostrarFormulario = !mostrarFormulario"
+        class="toggle-btn"
+        :aria-label="mostrarFormulario ? 'Ocultar formulario de nuevo libro' : 'Mostrar formulario para agregar nuevo libro'"
+      >
+        {{ mostrarFormulario ? '📕 Ocultar formulario' : '📘 Agregar nuevo libro' }}
+      </button>
+    </div>
+
+    <!-- Formulario para agregar libros -->
+    <AgregarLibro v-if="mostrarFormulario" />
 
     <!-- Buscador -->
     <input
@@ -15,13 +30,16 @@
       type="text"
       placeholder="🔍 Buscar por título..."
       class="buscador"
+      aria-label="Buscar libros por título"
     />
 
     <!-- Tabs de categorías -->
-    <nav class="categorias">
+    <nav class="categorias" role="list">
       <button
         :class="['categorias__btn', { active: !tramaSeleccionada }]"
         @click="tramaSeleccionada = ''"
+        role="listitem"
+        aria-pressed="!tramaSeleccionada"
       >
         Todos
       </button>
@@ -30,6 +48,8 @@
         :key="trama"
         :class="['categorias__btn', { active: tramaSeleccionada === trama }]"
         @click="tramaSeleccionada = trama"
+        role="listitem"
+        :aria-pressed="tramaSeleccionada === trama"
       >
         {{ trama }}
       </button>
@@ -41,14 +61,18 @@
     <p v-else-if="librosFiltrados.length === 0" class="mensaje mensaje--info">
       📭 No se encontraron libros con esos criterios.
     </p>
+    <p v-else class="mensaje mensaje--info">
+      📚 Mostrando {{ librosFiltrados.length }} libro(s)
+    </p>
 
     <!-- Libros -->
-    <section v-else class="libros">
+    <section v-else class="libros" role="list">
       <LibroCard
         v-for="libro in librosFiltrados"
         :key="libro.id"
         :libro="libro"
         @seleccionar="abrirModal"
+        role="listitem"
       />
     </section>
 
@@ -57,14 +81,22 @@
       v-if="libroSeleccionado"
       :libro="libroSeleccionado"
       @cerrar="cerrarModal"
-    />
+    >
+      <template #loading>
+        <p class="mensaje mensaje--cargando">Cargando detalles del libro...</p>
+      </template>
+    </ModalLibro>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, computed } from "vue";
+import axios from "axios";
 import LibroCard from "./components/LibroCard.vue";
 import ModalLibro from "./components/ModalLibro.vue";
+import AgregarLibro from './components/AgregarLibro.vue';
+
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 const libros = ref([]);
 const libroSeleccionado = ref(null);
@@ -72,21 +104,20 @@ const tramaSeleccionada = ref("");
 const busqueda = ref("");
 const isLoading = ref(true);
 const error = ref(null);
+const mostrarFormulario = ref(false);
+const isModalLoading = ref(false);
 
-// Categorías únicas
 const tramasUnicas = computed(() => {
   const tramas = new Set(libros.value.map(libro => libro.trama));
   return Array.from(tramas).sort();
 });
 
-// Cargar libros desde la API
 const cargarLibros = async () => {
   try {
     isLoading.value = true;
     error.value = null;
-    const res = await fetch("http://localhost:3000/api/libros");
-    if (!res.ok) throw new Error(`Error ${res.status}: ${res.statusText}`);
-    libros.value = await res.json();
+    const response = await axios.get(`${API_BASE}/api/libros`);
+    libros.value = response.data;
   } catch (err) {
     console.error("Error al cargar libros:", err);
     error.value = "No se pudieron cargar los libros. Intente nuevamente más tarde.";
@@ -95,49 +126,63 @@ const cargarLibros = async () => {
   }
 };
 
-// Modal
-const abrirModal = (libro) => {
-  libroSeleccionado.value = libro;
-};
-const cerrarModal = () => {
-  libroSeleccionado.value = null;
+const normalizeText = (text) => {
+  return text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 };
 
-// Filtrado por categoría y título
 const librosFiltrados = computed(() => {
+  const tramaFilter = tramaSeleccionada.value;
+  const busquedaFilter = normalizeText(busqueda.value);
+
   return libros.value.filter(libro => {
-    const coincideTrama = !tramaSeleccionada.value || libro.trama === tramaSeleccionada.value;
-    const coincideBusqueda = libro.titulo.toLowerCase().includes(busqueda.value.toLowerCase());
+    const libroTrama = libro.trama;
+    const libroTitulo = normalizeText(libro.titulo);
+
+    const coincideTrama = !tramaFilter || libroTrama === tramaFilter;
+    const coincideBusqueda = libroTitulo.includes(busquedaFilter);
     return coincideTrama && coincideBusqueda;
   });
 });
+
+const abrirModal = async (libro) => {
+  isModalLoading.value = true;
+  libroSeleccionado.value = null; // para mostrar loading
+
+  try {
+    const response = await axios.get(`${API_BASE}/api/libro/${libro.id}`);
+    libroSeleccionado.value = response.data;
+  } catch (err) {
+    console.error("Error obteniendo detalles del libro:", err);
+    libroSeleccionado.value = libro; // fallback
+  } finally {
+    isModalLoading.value = false;
+  }
+};
+
+const cerrarModal = () => {
+  libroSeleccionado.value = null;
+};
 
 onMounted(() => {
   cargarLibros();
 });
 </script>
 
+
 <style>
 :root {
-  --primario: #42b983;
-  --gradiente: linear-gradient(to right, #42b983, #2ecc71);
+  --primario: #ff6f61; /* Color primario más vibrante */
+  --gradiente: linear-gradient(to right, #ff6f61, #ffcc00); /* Gradiente más atractivo */
   --fondo: #f3f7f9;
-  --sombra: rgba(0, 0, 0, 0.1);
+  --sombra: rgba(0, 0, 0, 0.2);
   --error: #e74c3c;
   --exito: #2ecc71;
   --info: #3498db;
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(to right, #74ebd5, #acb6e5);
-
+  background: linear-gradient(to right, #ffafbd, #ffc3a0); /* Fondo más colorido */
   padding: 20px;
 }
 
@@ -145,39 +190,53 @@ body {
   max-width: 1200px;
   margin: auto;
   padding: 3rem 2rem;
-  background: rgba(230, 225, 255, 0.9);
-
-
-  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(15px);
   border-radius: 20px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
   animation: fadeIn 0.6s ease;
 }
 
-/* Título */
 .biblioteca__titulo {
-  font-size: 3rem;
+  font-size: 3.5rem; /* Título más grande */
   font-weight: bold;
   text-align: center;
   color: #222;
   margin-bottom: 1rem;
-  text-shadow: 1px 1px 2px #c0f0d2;
+  text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
 }
 
 .biblioteca__descripcion {
   max-width: 800px;
   margin: 0 auto 2rem;
-  padding: 1.25rem;
+  padding: 1.5rem;
   background: white;
   border-left: 4px solid var(--primario);
   border-radius: 0.5rem;
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   color: #4a5568;
   line-height: 1.7;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Buscador */
+.toggle-btn {
+  background: var(--primario);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem; /* Botón más grande */
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(255, 111, 97, 0.3);
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.toggle-btn:hover {
+  background: #ffcc00; /* Color de fondo al pasar el mouse */
+  transform: scale(1.05); /* Efecto de aumento */
+}
+
 .buscador {
   display: block;
   width: 100%;
@@ -188,14 +247,15 @@ body {
   border: 2px solid var(--primario);
   border-radius: 12px;
   outline: none;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-  transition: all 0.2s ease;
-}
-.buscador:focus {
-  border-color: #2ecc71;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
 }
 
-/* Categorías */
+.buscador:focus {
+  border-color: #ffcc00; /* Color de borde al enfocar */
+  box-shadow: 0 0 5px rgba(255, 204, 0, 0.5); /* Sombra al enfocar */
+}
+
 .categorias {
   display: flex;
   flex-wrap: wrap;
@@ -213,7 +273,7 @@ body {
   cursor: pointer;
   font-size: 0.9rem;
   font-weight: 500;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .categorias__btn:hover {
@@ -224,12 +284,11 @@ body {
 
 .categorias__btn.active {
   background: var(--primario);
-  color: black;
+  color: white;
   font-weight: 600;
-  box-shadow: 0 4px 6px rgba(66, 185, 131, 0.3);
+  box-shadow: 0 4px 6px rgba(255, 111, 97, 0.3);
 }
 
-/* Libros */
 .libros {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -237,7 +296,6 @@ body {
   padding: 0.5rem;
 }
 
-/* Mensajes */
 .mensaje {
   font-size: 1.1rem;
   font-weight: 500;
@@ -267,7 +325,6 @@ body {
   border-left: 4px solid #38a169;
 }
 
-/* Animación */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -279,16 +336,15 @@ body {
   }
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .biblioteca {
     padding: 1.5rem;
   }
-  
+
   .biblioteca__titulo {
-    font-size: 2rem;
+    font-size: 2.5rem; /* Título más pequeño en pantallas pequeñas */
   }
-  
+
   .libros {
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 1rem;
@@ -299,11 +355,11 @@ body {
   .biblioteca {
     padding: 1rem;
   }
-  
+
   .categorias {
     gap: 0.5rem;
   }
-  
+
   .categorias__btn {
     padding: 0.4rem 1rem;
     font-size: 0.8rem;
